@@ -61,7 +61,8 @@ class  EBayTradingApi
      * Gotten response xml , http_code & response status will be return as following associative array
      *
      *
-     * @return array[
+     * @return array
+     * [
      * 'http_code' => (int)_ _ _ _
      * 'status' => (string)_ _ _ _
      * 'response' => (array)_ _ _ _ _
