@@ -64,3 +64,28 @@ try{
 
 ``` 
 
+Sample Output :-
+```php
+Array(
+    [http_code] => 200
+    [status] => OK
+    [response] => Array
+        (
+            [Timestamp] => 2020-01-30T10:08:34.596Z
+            [Ack] => Success
+            [Version] => 1123
+            [Build] => E1123_INTL_APISIGNIN_19059236_R1
+            [TokenStatus] => Array
+                (
+                    [Status] => Active
+                    [EIASToken] => nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wMk4SiCpeCoAydj6x9nY+seQ==
+                    [ExpirationTime] => 2020-09-17T22:32:48.000Z
+                )
+
+        )
+
+) ```
+
+
+
+
