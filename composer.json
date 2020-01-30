@@ -1,0 +1,6 @@
+{
+    "require": {
+        "spatie/array-to-xml": "^2.11",
+        "guzzlehttp/guzzle": "^6.5"
+    }
+}
