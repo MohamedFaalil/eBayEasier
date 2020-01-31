@@ -79,9 +79,12 @@ class  EBayTradingApi
         return $apiResponse;
     }
 
-    public function getItem($itemId): array
+    public function getItem($postBody): array
     {
-
+        if($this->isThisType($postBody,'integer'))
+            print 'int';
+        else
+            print 'other';
     }
 
 
