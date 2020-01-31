@@ -79,12 +79,36 @@ class  EBayTradingApi
         return $apiResponse;
     }
 
+    /**
+     * ==> GetItem Endpoint<==
+     * call will be made by the function
+     * while it calls.
+     * @param $postBody
+     *
+     *  Gotten response xml , http_code & response status will be return as following associative array
+     *
+     * @return array
+     * [
+     * 'http_code' => (int)_ _ _ _
+     * 'status' => (string)_ _ _ _
+     * 'response' => (array)_ _ _ _ _
+     * ]
+     * @throws \Exception
+     */
     public function getItem($postBody): array
     {
-        if($this->isThisType($postBody,'integer'))
-            print 'int';
-        else
-            print 'other';
+        try{
+            $headers = $this->header;
+            $postBodyArray = $this->getItemCustomArray($postBody);
+            $postXml = $this->getXMLFromArray($postBodyArray,'GetItemRequest');
+            $this->constructFullHeader('GetItem',strlen($postXml),$headers);
+            $apiResponse = $this->sendPostRequest($postXml, $headers);
+            $apiResponse['response'] = $this->xmlToArray($apiResponse['response']); //caught xml value castted to an array
+
+            return $apiResponse;
+        }catch(Exception $e){
+            throw new \Exception($e->getMessage());
+        }
     }
 
 
@@ -250,6 +274,13 @@ class  EBayTradingApi
             return $response['response'];
     }
 
+    /**
+     * Function return XML
+     * @param $postBodyArray
+     * @param $callName
+     * @param array $rootAttribute
+     * @return string|XML
+     */
     private function getXMLFromArray($postBodyArray, $callName,
                                      $rootAttribute = ['xmlns' => 'urn:ebay:apis:eBLBaseComponents',])
     {
@@ -269,6 +300,28 @@ class  EBayTradingApi
             ]
         ];
     }
+
+    private function getItemDefaultArray(int $itemId){
+        return [
+          'RequesterCredentials'=>[
+              'eBayAuthToken' => $this->token
+          ],
+          'ItemID' => $itemId
+      ];
+    }
+    private function getItemCustomArray(&$postBody){
+        if(empty($postBody))
+            throw new \Exception('Function never works with empty parameters');
+        else if($this->isThisType($postBody,'integer')) // integer parameter set as itemID
+            return $this->getItemDefaultArray($postBody);
+        else if(is_string($postBody) && is_numeric($postBody)) // string type numeric value also set as itemID
+            return  $this->getItemDefaultArray((int)$postBody);
+        else if($this->isThisType($postBody,'array'))
+            return  $postBody;
+        else
+            throw new \Exception('Invalid parameter');
+    }
+
 
     /**
      * If there is any errors on token status it will be thrown as exception error

@@ -27,26 +27,30 @@ The Package will make easy handling ebay api calls
     ```    
 
 #### 02. Developer Guide
+<ol>
+<li>
+ Instantiate the object 
 
-01 - Instantiate the object 
-```php
+ ```php
 try{
     $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url);
 }catch(Exception $e){
     print 'Error ' . $e->getMessage();
 }
-```
+ ```
 Respectively token , devId, appId , certId, url are required for the constructer method. Above credentials are more important to make each http hits.
-
-02 - getTokenStatus() method.
+</li>
+<li>
+ getTokenStatus() method.
  Method **no required** any parameters.
  Method returns an array with respective value such following
- ```php
+
+```php
       [
                'http_code' => (int)_ _ _ _
                'status' => (string)_ _ _ _
                'response' => (array)_ _ _ _ _
-       ]
+      ]
 ```
 
 ```php
@@ -57,7 +61,6 @@ try{
 }catch(Exception $e){
     print 'Error ' . $e->getMessage();
 }
-
 ``` 
 
 Sample Output :-
@@ -67,20 +70,101 @@ Array(
     [status] => OK
     [response] => Array
         (
-            [Timestamp] => 2020-01-30T10:08:34.596Z
+            [Timestamp] => 
             [Ack] => Success
             [Version] => 1123
-            [Build] => E1123_INTL_APISIGNIN_19059236_R1
+            [Build] => 
             [TokenStatus] => Array
                 (
                     [Status] => Active
-                    [EIASToken] => nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wMk4SiCpeCoAydj6x9nY+seQ==
-                    [ExpirationTime] => 2020-09-17T22:32:48.000Z
+                    [EIASToken] => 
+                    [ExpirationTime] => 
                 )
 
         )
 
 )
 ```
-03 - getItem() method.
-`The GetItem call returns listing data such as title, description, price information, user information, and so on, for the specified ItemID.`
+</li>
+
+<li>
+ getItem($postBody) method.<br/>
+The GetItem call returns listing data such as title, description, price information, user information, and so on, for the specified ItemID.<br/>
+
+Function requires a parameter. which may be<br/>
+**(int/string) itemId** or array of postBody as an associative array according eBay API [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetItem.html). <br/>
+**Eg :-**
+```php
+try{
+    $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url);
+    $postBody = 178218224608;
+    // --- or ---
+    $postBody = [
+        'IncludeItemCompatibilityList' => (bool),
+        'IncludeItemSpecifics' => (bool),
+        'IncludeTaxTable' => (bool),
+        'IncludeWatchCount' =>(bool),
+        'ItemID' => (string),
+        'VariationSpecifics' => [
+            'NameValueList'=>[
+    
+                ['Name' => (string),'Value' => (string)],
+                ['Name' => (string),'Value' => (string)]
+                ---------------------------------------more
+            ]
+            
+        ],
+        'MessageID' => (string)
+    ];
+
+    $response = $ebayTrading->getItem($postBody);
+
+    print_r($response);
+}catch(Exception $e){
+    print 'Error ' . $e->getMessage();
+}
+```
+Sample Output :-
+
+```php
+Array
+(
+    [http_code] => 200
+    [status] => OK
+    [response] => Array
+        (
+            [Timestamp] => 
+            [Ack] => Success
+            [Version] => 
+            [Build] => 
+            [Item] => Array
+                (
+                    [AutoPay] => true
+                    [BuyerProtection] => 
+                    [BuyItNowPrice] => 0.0
+                    [Country] => 
+                    [Currency] => 
+                    [GiftIcon] => 0
+                    [HitCounter] => 
+                    [ItemID] => 
+                    [ListingDetails] => Array
+                        (
+                        )
+
+                    [ListingDuration] => 
+                    [ListingType] => FixedPriceItem
+                    [Location] => 
+                    [PaymentMethods] => PayPal
+                    [PayPalEmailAddress] => example@gmail.com
+                    [PrimaryCategory] => Array
+                        (
+                            [CategoryID] => 
+                            [CategoryName] => 
+                        )
+
+                    [PrivateListing] => false
+ --------------------------- more
+)
+```
+</li>
+</ol>
