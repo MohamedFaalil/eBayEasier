@@ -11,38 +11,34 @@ The Package will make easy handling ebay api calls
     ```php
     require 'vendor/autoload.php';
    ```
-4. use namespace of the package `ebay\src`  
+4. use namespace of the package `ebay\eBayEasier\EBayTradingApi`  
     ```php
-   use ebay\src;
+   use ebay\eBayEasier\EBayTradingApi;
    ``` 
 ###### Othewise you may just clone / download the package library File.
 
 01. Install [**GIT**](https://git-scm.com/downloads) on your local/developemnt environment
 02. Run command 
     `git clone https://github.com/MohamedFaalil/eBayEasier.git`
-03. Require Package Object by adding the following lie to your code
-    ```php
-    require  dirname(__FILE__) . '/eBayEasier/src/EBayTradingApi';
-    ```    
-04. use namespace of the package `ebay\src`  
+03. Import Package 
+04. use namespace of the package `ebay\eBayEasier\EBayTradingApi`  
      ```php
-    use ebay\src;
+    use ebay\eBayEasier\EBayTradingApi;
     ```    
 
-
-#### 02. Guide
+#### 02. Developer Guide
 
 01 - Instantiate the object 
 ```php
 try{
-    $ebayTrading = new src\EBayTradingApi($token,$devId,$appId,$certName,$url);
+    $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url);
 }catch(Exception $e){
     print 'Error ' . $e->getMessage();
 }
 ```
 Respectively token , devId, appId , certId, url are required for the constructer method. Above credentials are more important to make each http hits.
 
-02 - tetTokenStatus() method.
+02 - getTokenStatus() method.
  Method **no required** any parameters.
  Method returns an array with respective value such following
  ```php
@@ -55,7 +51,7 @@ Respectively token , devId, appId , certId, url are required for the constructer
 
 ```php
 try{
-    $ebayTrading = new src\EBayTradingApi($token,$devId,$appId,$certName,$url);
+    $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url);
     $tokenStatusResponse = $ebayTrading->getTokenStatus();
     print_r($tokenStatusResponse);
 }catch(Exception $e){
@@ -84,8 +80,7 @@ Array(
 
         )
 
-) ```
-
-
-
-
+)
+```
+03 - getItem() method.
+`The GetItem call returns listing data such as title, description, price information, user information, and so on, for the specified ItemID.`

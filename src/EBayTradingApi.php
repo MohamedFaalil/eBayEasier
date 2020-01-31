@@ -1,14 +1,13 @@
 <?php
 
 
-namespace ebay\src;
+namespace ebay\eBayEasier;
 require dirname(__FILE__) . '/../vendor/autoload.php';
 
 use Spatie\ArrayToXml\ArrayToXml;
 
 
 /**
- * 456
  * Class EBayTradingApi
  * @package ebay\src
  */
@@ -24,7 +23,7 @@ class  EBayTradingApi
     private const CONTENT_TYPE = 'text/xml';
 
     /**
-     *    =================> EbayTraingApi Object's Main Functionalities <=================
+     *    =================> Ebay TradingApi Object's Main Functionalities <=================
      **/
 
     /**
@@ -71,24 +70,20 @@ class  EBayTradingApi
     public function getTokenStatus(): array
     {
         $headers = $this->header;
-        $postArray = [
-            'RequesterCredentials' => [
-                'eBayAuthToken' => $this->token
-            ]
-        ];
-        $postXml = ArrayToXml::convert($postArray, [
-            'rootElementName' => 'GetTokenStatusRequest',
-            '_attributes' => [
-                'xmlns' => 'urn:ebay:apis:eBLBaseComponents',
-            ],
-        ], true, 'utf-8');
-
+        $postBodyArray = $this->getTokenDefaultArray();
+        $postXml = $this->getXMLFromArray($postBodyArray,'GetTokenStatusRequest');
         $this->constructFullHeader('GetTokenStatus', strlen($postXml), $headers);
         $apiResponse = $this->sendPostRequest($postXml, $headers);
-        $apiResponse['response'] = $this->xmlToArray($apiResponse['response']);
+        $apiResponse['response'] = $this->xmlToArray($apiResponse['response']); //caught xml value castted to an array
 
         return $apiResponse;
     }
+
+    public function getItem($itemId): array
+    {
+
+    }
+
 
 
     /**
@@ -101,7 +96,7 @@ class  EBayTradingApi
      * @param string $xml
      * @return array
      */
-    private function xmlToArray(string $xml):array
+    private function xmlToArray(string $xml): array
     {
         $xml = simplexml_load_string($xml, "SimpleXMLElement", LIBXML_NOCDATA);
         $json = json_encode($xml);
@@ -114,7 +109,7 @@ class  EBayTradingApi
      * @param array $headers
      * @return array
      */
-    private function sendPostRequest(string $post,array $headers): array
+    private function sendPostRequest(string $post, array $headers): array
     {
         $client = new \GuzzleHttp\Client();
         $response = $client->request('POST', $this->url, [
@@ -178,8 +173,9 @@ class  EBayTradingApi
      * @param $url
      * @throws \Exception
      */
-    private function setUrlAttribute($url){
-        if(empty($url) || !filter_var($url, FILTER_VALIDATE_URL)) throw new \Exception('Invalid url');
+    private function setUrlAttribute($url)
+    {
+        if (empty($url) || !filter_var($url, FILTER_VALIDATE_URL)) throw new \Exception('Invalid url');
         $this->url = $url;
     }
 
@@ -227,7 +223,7 @@ class  EBayTradingApi
      * @param string $type
      * @return bool
      */
-    private function isThisType($value,string $type): bool
+    private function isThisType($value, string $type): bool
     {
         return strtolower(gettype($value)) == $type ? true : false;
     }
@@ -241,7 +237,8 @@ class  EBayTradingApi
      * @return mixed
      * @throws \Exception
      */
-    private function responseWithValidation(array $response){
+    private function responseWithValidation(array $response)
+    {
         if ($response['http_code'] != 200)
             throw new \Exception('http code : ' . $response['http_code'] . PHP_EOL . ' status : ' . $response['status']);
         elseif (strtolower($response['response']['Ack']) == 'failure')
@@ -250,22 +247,40 @@ class  EBayTradingApi
             return $response['response'];
     }
 
+    private function getXMLFromArray($postBodyArray, $callName,
+                                     $rootAttribute = ['xmlns' => 'urn:ebay:apis:eBLBaseComponents',])
+    {
+        return ArrayToXml::convert($postBodyArray, [
+            'rootElementName' => $callName,
+            '_attributes' => $rootAttribute,
+        ], true, 'utf-8');
+    }
+
 
     /************* ==================> Specific Sub/Helper Functionalities <================== *************/
+    private function getTokenDefaultArray()
+    {
+        return [
+            'RequesterCredentials' => [
+                'eBayAuthToken' => $this->token
+            ]
+        ];
+    }
+
     /**
      * If there is any errors on token status it will be thrown as exception error
      * otherwise returns true
      * @return bool
      * @throws \Exception
      */
-    private function tokenValidation() : bool
+    private function tokenValidation(): bool
     {
         try {
             $tokenResponse = $this->responseWithValidation($this->getTokenStatus());
-            if(strtolower($tokenResponse['TokenStatus']['Status']) != 'active')
+            if (strtolower($tokenResponse['TokenStatus']['Status']) != 'active')
                 throw new \Exception($tokenResponse['TokenStatus']['Status']);
             return true;
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             throw  new \Exception($e->getMessage());
         }
     }
