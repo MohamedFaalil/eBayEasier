@@ -145,6 +145,7 @@ class  EBayTradingApi
 
 
 
+
     /**
      *    =================> EbayTraingApi Object's Sub/Helper Functionalities <=================
      **/
@@ -313,13 +314,18 @@ class  EBayTradingApi
 
     /**
      * Set Request Credentials with eBay Auth Token
+     * warningLevel(if not exists) and error language(if not exists)
      * @param $postArray
      * @return mixed
      */
-    private function setCredentialPartOnPostArray($postArray){
+    private function setMandatoryPartsOnPostArray($postArray){
         $postArray['RequesterCredentials'] = [
             'eBayAuthToken' => $this->token
         ];
+        if(!array_key_exists('ErrorLanguage', $postArray))
+            $postArray['ErrorLanguage'] = 'en_US';
+        if(!array_key_exists('WarningLevel',$postArray))
+            $postArray['WarningLevel'] = 'High';
 
         return $postArray;
     }
@@ -364,26 +370,20 @@ class  EBayTradingApi
         else if(is_string($postBody) && is_numeric($postBody)) // string type numeric value also set as itemID
             return  $this->getItemDefaultArray((int)$postBody);
         else if($this->isThisType($postBody,'array'))
-            return  $this->setCredentialPartOnPostArray($postBody);
+            return  $this->setMandatoryPartsOnPostArray($postBody);
         else
             throw new \Exception('Invalid parameter');
     }
 
     /**
      * make full array by including token,
-     * warningLevel(if not exists) and error language(if not exists)
      * @param $postBody
      * @return mixed
      */
     private function getAddFixedPriceItem($postBody){
-        $postArray = $this->setCredentialPartOnPostArray($postBody);
-        if(!array_key_exists('ErrorLanguage', $postArray))
-            $postArray['ErrorLanguage'] = 'en_US';
-        if(!array_key_exists('WarningLevel',$postArray))
-            $postArray['WarningLevel'] = 'High';
+        $postArray = $this->setMandatoryPartsOnPostArray($postBody);
         return $postArray;
     }
-
 
     /**
      * If there is any errors on token status it will be thrown as exception error

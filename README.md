@@ -95,7 +95,7 @@ Array(
 The GetItem call returns listing data such as title, description, price information, user information, and so on, for the specified ItemID.<br/>
 
 Function requires a parameter. which may be<br/>
-**(int/string) itemId** or **an associative array** of postBody as an associative array according eBay API [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetItem.html). <br/>
+**(int/string) itemId** or **an associative array** of postBody as an associative array according eBay API [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetItem.html#input). <br/>
 **Eg :-**
 ```php
 try{
