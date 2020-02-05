@@ -1,4 +1,4 @@
-# EBayApi
+# EBayApi (1131)
 The Package will make easy handling ebay api calls
 
 #### 01.Installation
@@ -27,9 +27,12 @@ The Package will make easy handling ebay api calls
     ```    
 
 #### 02. Developer Guide
+Following calls are mostly expected an associative array as parameter which needs to construct according<br/>
+ specific eBay API calls. Refer eBay Trading API [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/index.html) while using each specific function. <b>No need to worry about 
+ XML root</b> just construct <b>inner key, values</b> correctly
 <ol>
 <li>
- Instantiate the object 
+ <h5>Instantiate the object</h5> 
 
  ```php
 try{
@@ -41,7 +44,7 @@ try{
 Respectively token , devId, appId , certId, url are required for the constructer method. Above credentials are more important to make each http hits.
 </li>
 <li>
- getTokenStatus() method.
+ <h5>getTokenStatus() method.</h5>
  Method **no required** any parameters.
  Method returns an array with respective value such following
 
@@ -88,11 +91,11 @@ Array(
 </li>
 
 <li>
- getItem($postBody) method.<br/>
+ <h5>getItem($postBody) method.</h5><br/>
 The GetItem call returns listing data such as title, description, price information, user information, and so on, for the specified ItemID.<br/>
 
 Function requires a parameter. which may be<br/>
-**(int/string) itemId** or array of postBody as an associative array according eBay API [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetItem.html). <br/>
+**(int/string) itemId** or **an associative array** of postBody as an associative array according eBay API [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetItem.html). <br/>
 **Eg :-**
 ```php
 try{
@@ -165,6 +168,66 @@ Array
                     [PrivateListing] => false
  --------------------------- more
 )
+```
+</li>
+<li>
+ <h5>addFixedPriceItem($postBody)  method.</h5><br/>
+Use this call to define and list a new fixed-price item. This call returns the item ID for the new listing,<br/>
+plus an estimation of the fees the seller will incur for posting the listing (not including the Final Value Fee,<br/>
+which cannot be calculated until the listing has ended).<br/>
+
+Function requires a parameter as [**an associative array**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/AddFixedPriceItem.html#Input) . 
+```php
+try{
+    $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url);
+
+    $postBody = [
+        'IncludeItemCompatibilityList' => (bool),
+        'IncludeItemSpecifics' => (bool),
+        'IncludeTaxTable' => (bool),
+        'IncludeWatchCount' =>(bool),
+        'ItemID' => (string),
+        'VariationSpecifics' => [
+            'NameValueList'=>[
+    
+                ['Name' => (string),'Value' => (string)],
+                ['Name' => (string),'Value' => (string)]
+                ---------------------------------------more
+            ]
+            
+        ],
+        'MessageID' => (string)
+    ];
+
+    $response = $ebayTrading->addFixedPriceItem($postBody);
+
+    print_r($response);
+}catch(Exception $e){
+    print 'Error ' . $e->getMessage();
+}
+``` 
+Sample Output:
+```php
+array (
+  'name' => 'AddFixedPriceItemResponse',
+  'value' => '',
+  'attr' => 
+      array (
+      ),
+      'children' => 
+          array (
+            0 => 
+            array (
+              'name' => 'Timestamp',
+              'value' => '2019-10-31T20:39:16.515Z',
+              'attr' => 
+              array (
+              ),
+              'children' => 
+              array (
+              ),
+            ),
+-----------More ------
 ```
 </li>
 </ol>

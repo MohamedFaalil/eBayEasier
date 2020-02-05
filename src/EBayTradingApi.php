@@ -9,6 +9,7 @@ use Spatie\ArrayToXml\ArrayToXml;
 
 /**
  * Class EBayTradingApi
+ * Compatibility Level 1131
  * @package ebay\src
  */
 class  EBayTradingApi
@@ -17,9 +18,8 @@ class  EBayTradingApi
     /**
      *    =================> EbayTraingApi Object's Attributes <=================
      **/
-    private $token, $apiDevId, $apiAppId, $apiCertName, $header, $url;
+    private $token, $apiDevId, $apiAppId, $apiCertName, $headers, $url, $siteId;
     private const COMPATIBILITY_LEVEL = 1131;
-    private const SITE_ID = 15;
     private const CONTENT_TYPE = 'text/xml';
 
     /**
@@ -36,13 +36,14 @@ class  EBayTradingApi
      * @param $url
      * @throws \Exception
      */
-    public function __construct($token, $apiDevId, $apiAppId, $apiCertName, $url)
+    public function __construct($token, $apiDevId, $apiAppId, $apiCertName, $url,$siteId)
     {
         $this->setTokenAttribute($token);
         $this->setDevIdAttribute($apiDevId);
         $this->setAppIdAttribute($apiAppId);
         $this->setApiCertNameAttribute($apiCertName);
         $this->setUrlAttribute($url);
+        $this->setSiteIdAttribute($siteId);
 
         $this->setPostHeaderAttribute();
         $this->tokenValidation();
@@ -57,7 +58,7 @@ class  EBayTradingApi
      *   which represents permission for an application to access,
      *   on the user's behalf, eBay data using eBay APIs.)
      *
-     * Gotten response xml , http_code & response status will be return as following associative array
+     * Gotten response xml , http_code & response status  return as following associative array
      *
      *
      * @return array
@@ -69,7 +70,7 @@ class  EBayTradingApi
      */
     public function getTokenStatus(): array
     {
-        $headers = $this->header;
+        $headers = $this->headers;
         $postBodyArray = $this->getTokenDefaultArray();
         $postXml = $this->getXMLFromArray($postBodyArray,'GetTokenStatusRequest');
         $this->constructFullHeader('GetTokenStatus', strlen($postXml), $headers);
@@ -85,7 +86,7 @@ class  EBayTradingApi
      * while it calls.
      * @param $postBody
      *
-     *  Gotten response xml , http_code & response status will be return as following associative array
+     *  Gotten response xml , http_code & response status  return as following associative array
      *
      * @return array
      * [
@@ -98,8 +99,8 @@ class  EBayTradingApi
     public function getItem($postBody): array
     {
         try{
-            $headers = $this->header;
-            $postBodyArray = $this->getItemCustomArray($postBody);
+            $headers = $this->headers;
+            $postBodyArray = $this->getItemPostArray($postBody);
             $postXml = $this->getXMLFromArray($postBodyArray,'GetItemRequest');
             $this->constructFullHeader('GetItem',strlen($postXml),$headers);
             $apiResponse = $this->sendPostRequest($postXml, $headers);
@@ -110,6 +111,37 @@ class  EBayTradingApi
             throw new \Exception($e->getMessage());
         }
     }
+
+    /**
+     * ==> AddFixedPriceItem Endpoint <==
+     * call will be made by the function
+     * while it calls.
+     * @param $postBody
+     *
+     *   Gotten response xml , http_code & response status return as following associative array
+     * @return array
+     */
+    public function addFixedPriceItem(array $postBody): array{
+        $headers = $this->headers;
+        if(!$this->isThisType($postBody,'array'))
+            throw new \Exception('Invalid parameter: Array Expected');
+        $postArray = $this->getAddFixedPriceItem($postBody);
+        $postXml = $this->getXMLFromArray($postArray,'AddFixedPriceItemRequest');
+        $this->constructFullHeader('AddFixedPriceItem',strlen($postXml),$headers);
+        $apiResponse = $this->sendPostRequest($postXml, $headers);
+        $apiResponse['response'] = $this->xmlToArray($apiResponse['response']); //caught xml value castted to an array
+
+        return $apiResponse;
+    }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -212,14 +244,22 @@ class  EBayTradingApi
      */
     private function setPostHeaderAttribute()
     {
-        $this->header = [
+        $this->headers = [
             'X-EBAY-API-COMPATIBILITY-LEVEL' => self::COMPATIBILITY_LEVEL,
             'X-EBAY-API-DEV-NAME' => $this->apiDevId,
             'X-EBAY-API-APP-NAME' => $this->apiAppId,
             'X-EBAY-API-CERT-NAME' => $this->apiCertName,
-            'X-EBAY-API-SITEID' => self::SITE_ID,
+            'X-EBAY-API-SITEID' => $this->siteId,
             'Content-Type' => self::CONTENT_TYPE
         ];
+    }
+
+    /**
+     * Function sets site ID
+     * @param $siteId
+     */
+    private function setSiteIdAttribute($siteId){
+        $this->siteId = $siteId;
     }
 
     /**
@@ -256,38 +296,32 @@ class  EBayTradingApi
     }
 
     /**
-     * Function returns response
-     * If only if there have no http errors(unless 200 http code)
-     * Or Response Ack failure state
-     * otherwise particular error state will be thrown as exception
-     * @param array $response
-     * @return mixed
-     * @throws \Exception
-     */
-    private function responseWithValidation(array $response)
-    {
-        if ($response['http_code'] != 200)
-            throw new \Exception('http code : ' . $response['http_code'] . PHP_EOL . ' status : ' . $response['status']);
-        elseif (strtolower($response['response']['Ack']) == 'failure')
-            throw new \Exception($response['response']['Errors']['ShortMessage'] . PHP_EOL . $response['response']['Errors']['LongMessage'] . PHP_EOL . 'Error Code : ' . $response['response']['Errors']['ErrorCode']);
-        else
-            return $response['response'];
-    }
-
-    /**
      * Function return XML
      * @param $postBodyArray
-     * @param $callName
+     * @param $rootName
      * @param array $rootAttribute
      * @return string|XML
      */
-    private function getXMLFromArray($postBodyArray, $callName,
+    private function getXMLFromArray($postBodyArray, $rootName,
                                      $rootAttribute = ['xmlns' => 'urn:ebay:apis:eBLBaseComponents',])
     {
         return ArrayToXml::convert($postBodyArray, [
-            'rootElementName' => $callName,
+            'rootElementName' => $rootName,
             '_attributes' => $rootAttribute,
         ], true, 'utf-8');
+    }
+
+    /**
+     * Set Request Credentials with eBay Auth Token
+     * @param $postArray
+     * @return mixed
+     */
+    private function setCredentialPartOnPostArray($postArray){
+        $postArray['RequesterCredentials'] = [
+            'eBayAuthToken' => $this->token
+        ];
+
+        return $postArray;
     }
 
 
@@ -301,6 +335,11 @@ class  EBayTradingApi
         ];
     }
 
+    /**
+     * Returns essential default array with item Id and token
+     * @param int $itemId
+     * @return array
+     */
     private function getItemDefaultArray(int $itemId){
         return [
           'RequesterCredentials'=>[
@@ -309,7 +348,15 @@ class  EBayTradingApi
           'ItemID' => $itemId
       ];
     }
-    private function getItemCustomArray(&$postBody){
+
+    /**
+     * If parameter is interger then call getItemDefaultArray and returns
+     * otherwise make full array by including token
+     * @param $postBody
+     * @return array|mixed
+     * @throws \Exception
+     */
+    private function getItemPostArray($postBody){
         if(empty($postBody))
             throw new \Exception('Function never works with empty parameters');
         else if($this->isThisType($postBody,'integer')) // integer parameter set as itemID
@@ -317,9 +364,24 @@ class  EBayTradingApi
         else if(is_string($postBody) && is_numeric($postBody)) // string type numeric value also set as itemID
             return  $this->getItemDefaultArray((int)$postBody);
         else if($this->isThisType($postBody,'array'))
-            return  $postBody;
+            return  $this->setCredentialPartOnPostArray($postBody);
         else
             throw new \Exception('Invalid parameter');
+    }
+
+    /**
+     * make full array by including token,
+     * warningLevel(if not exists) and error language(if not exists)
+     * @param $postBody
+     * @return mixed
+     */
+    private function getAddFixedPriceItem($postBody){
+        $postArray = $this->setCredentialPartOnPostArray($postBody);
+        if(!array_key_exists('ErrorLanguage', $postArray))
+            $postArray['ErrorLanguage'] = 'en_US';
+        if(!array_key_exists('WarningLevel',$postArray))
+            $postArray['WarningLevel'] = 'High';
+        return $postArray;
     }
 
 
@@ -332,9 +394,9 @@ class  EBayTradingApi
     private function tokenValidation(): bool
     {
         try {
-            $tokenResponse = $this->responseWithValidation($this->getTokenStatus());
-            if (strtolower($tokenResponse['TokenStatus']['Status']) != 'active')
-                throw new \Exception($tokenResponse['TokenStatus']['Status']);
+            $tokenResponse = $this->getTokenStatus();
+            if (strtolower($tokenResponse['response']['TokenStatus']['Status']) != 'active')
+                throw new \Exception($tokenResponse['response']['TokenStatus']['Status']);
             return true;
         } catch (\Exception $e) {
             throw  new \Exception($e->getMessage());
