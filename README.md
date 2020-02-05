@@ -32,19 +32,19 @@ Following calls are mostly expected an associative array as parameter which need
  XML root</b> just construct <b>inner key, values</b> correctly
 <ol>
 <li>
- <h5>Instantiate the object</h5> 
+ <h5>Instantiate the object</h5><hr/> 
 
  ```php
 try{
-    $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url);
+    $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
 }catch(Exception $e){
     print 'Error ' . $e->getMessage();
 }
  ```
-Respectively token , devId, appId , certId, url are required for the constructer method. Above credentials are more important to make each http hits.
+Respectively token , devId, appId , certId, url, siteId are required for the constructer method. Above credentials are more important to make each http hits.
 </li>
 <li>
- <h5>getTokenStatus() method.</h5>
+ <h5>getTokenStatus() method.</h5><hr/>
  Method **no required** any parameters.
  Method returns an array with respective value such following
 
@@ -58,7 +58,7 @@ Respectively token , devId, appId , certId, url are required for the constructer
 
 ```php
 try{
-    $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url);
+    $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
     $tokenStatusResponse = $ebayTrading->getTokenStatus();
     print_r($tokenStatusResponse);
 }catch(Exception $e){
@@ -91,7 +91,7 @@ Array(
 </li>
 
 <li>
- <h5>getItem($postBody) method.</h5><br/>
+ <h5>getItem($postBody) method.</h5><hr/>
 The GetItem call returns listing data such as title, description, price information, user information, and so on, for the specified ItemID.<br/>
 
 Function requires a parameter. which may be<br/>
@@ -99,7 +99,7 @@ Function requires a parameter. which may be<br/>
 **Eg :-**
 ```php
 try{
-    $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url);
+    $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
     $postBody = 178218224608;
     // --- or ---
     $postBody = [
@@ -171,7 +171,7 @@ Array
 ```
 </li>
 <li>
- <h5>addFixedPriceItem($postBody)  method.</h5><br/>
+ <h5>addFixedPriceItem($postBody)  method.</h5><hr/>
 Use this call to define and list a new fixed-price item. This call returns the item ID for the new listing,<br/>
 plus an estimation of the fees the seller will incur for posting the listing (not including the Final Value Fee,<br/>
 which cannot be calculated until the listing has ended).<br/>
@@ -179,7 +179,7 @@ which cannot be calculated until the listing has ended).<br/>
 Function requires a parameter as [**an associative array**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/AddFixedPriceItem.html#Input) . 
 ```php
 try{
-    $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url);
+    $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
 
     $postBody = [
         'IncludeItemCompatibilityList' => (bool),
@@ -229,5 +229,78 @@ array (
             ),
 -----------More ------
 ```
+</li>
+<li>
+    <h5>reviseFixedPriceItem($postBody) method</h5><hr/>
+    Use this call to change the properties of a currently active fixed-price listing (including multi-variation listings). 
+    
+   [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/ReviseFixedPriceItem.html) <br/>
+   
+   Please [**refer the documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/ReviseFixedPriceItem.html#Input) before construct the associative array
+```php
+$ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
+
+        $post_data = [
+        	'Item' => [
+        	    'ItemID'=>110038081632	      
+        		],
+        	'Variations' => [
+        	     'Variation'=>[
+        		     'SKU'=>'RLauren_Wom_TShirt_Pnk_S',
+        		     'StartPrice' => 14.99,
+        		     'Quantity'=> 4,
+        		     'VariationSpecifics' => [
+        				'NameValueList' => [
+        					[
+        					'Name'=>'Color',
+        					'Value' => Pink
+        					],
+        					[
+        					'Name' => 'Size',
+        					'Value' => 'S'
+        					]
+        				                   ],
+        			                         ]
+        		                ],
+        ------------More Variation-------------
+        		            ] //variations end
+        ];
+    
+            $response = $ebayTrading->reviseFixedPriceItem($postBody);
+        
+            print_r($response);
+        }catch(Exception $e){
+            print 'Error ' . $e->getMessage();
+        }
+```
+Sample Output:
+```php
+[
+	'Timestamp' => '2019-11-06T18:40:55.049Z',
+	'Ack'=>'Success',
+	'Version' => 1131,
+	'Build' => 'E1131_UNI_API5_19098188_R1',
+	'ItemID'=>110038081632,
+	'StartTime'=>'2019-11-06T18:40:55.049Z',
+	'Fees'=> [
+		 	'Fee'=>[
+				 [
+				  'Name' => 'AuctionLengthFee',
+				  'Fee'=>0.0
+				 ],
+				 [
+				  'Name' => 'BoldFee',
+				  'Fee'=>0.0
+				 ],
+                                 [
+				  'Name' => 'BuyItNowFee',
+				  'Fee'=>0.0
+				 ],
+			       ]
+		 ]
+];
+``` 
+   
+     
 </li>
 </ol>

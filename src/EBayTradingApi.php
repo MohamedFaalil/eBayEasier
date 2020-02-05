@@ -121,11 +121,11 @@ class  EBayTradingApi
      *   Gotten response xml , http_code & response status return as following associative array
      * @return array
      */
-    public function addFixedPriceItem(array $postBody): array{
+    public function addFixedPriceItem($postBody): array{
         $headers = $this->headers;
         if(!$this->isThisType($postBody,'array'))
             throw new \Exception('Invalid parameter: Array Expected');
-        $postArray = $this->getAddFixedPriceItem($postBody);
+        $postArray = $this->getAddFixedPriceItemArray($postBody);
         $postXml = $this->getXMLFromArray($postArray,'AddFixedPriceItemRequest');
         $this->constructFullHeader('AddFixedPriceItem',strlen($postXml),$headers);
         $apiResponse = $this->sendPostRequest($postXml, $headers);
@@ -133,8 +133,27 @@ class  EBayTradingApi
 
         return $apiResponse;
     }
+    /**
+     * ==> ReviseFixedPriceItem Endpoint <==
+     * call will be made by the function
+     * while it calls.
+     * @param $postBody
+     *
+     *   Gotten response xml , http_code & response status return as following associative array
+     * @return array
+     */
+    public function reviseFixedPriceItem($postBody): array{
+        $headers = $this->headers;
+        if(!$this->isThisType($postBody,'array'))
+            throw new \Exception('Invalid parameter: Array Expected');
+        $postArray = $this->getReviseFixedPriceItemArray($postBody);
+        $postXml = $this->getXMLFromArray($postArray,'ReviseFixedPriceItemRequest');
+        $this->constructFullHeader('ReviseFixedPriceItem',strlen($postXml),$headers);
+        $apiResponse = $this->sendPostRequest($postXml, $headers);
+        $apiResponse['response'] = $this->xmlToArray($apiResponse['response']);
 
-
+        return $apiResponse;
+    }
 
 
 
@@ -376,11 +395,21 @@ class  EBayTradingApi
     }
 
     /**
-     * make full array by including token,
+     * make full AddFixedPriceItem Post Data Array by including token,Warning Level and Error Language
      * @param $postBody
      * @return mixed
      */
-    private function getAddFixedPriceItem($postBody){
+    private function getAddFixedPriceItemArray($postBody){
+        $postArray = $this->setMandatoryPartsOnPostArray($postBody);
+        return $postArray;
+    }
+
+    /**
+     * make full ReviseFixedPriceItem Post Data Array by including token,Warning Level and Error Language
+     * @param $postBody
+     * @return mixed
+     */
+    private function getReviseFixedPriceItemArray($postBody){
         $postArray = $this->setMandatoryPartsOnPostArray($postBody);
         return $postArray;
     }
