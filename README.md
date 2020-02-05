@@ -1,5 +1,5 @@
 # EBayApi (1131)
-The Package will make easy handling ebay api calls
+The Package will make easy to handle ebay api calls
 
 #### 01.Installation
 ###### The SDK can be installed with [**Composer**](https://getcomposer.org/).
