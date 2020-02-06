@@ -36,7 +36,7 @@ class  EBayTradingApi
      * @param $url
      * @throws \Exception
      */
-    public function __construct($token, $apiDevId, $apiAppId, $apiCertName, $url,$siteId)
+    public function __construct($token, $apiDevId, $apiAppId, $apiCertName, $url, $siteId)
     {
         $this->setTokenAttribute($token);
         $this->setDevIdAttribute($apiDevId);
@@ -71,13 +71,9 @@ class  EBayTradingApi
     public function getTokenStatus(): array
     {
         $headers = $this->headers;
-        $postBodyArray = $this->getTokenDefaultArray();
-        $postXml = $this->getXMLFromArray($postBodyArray,'GetTokenStatusRequest');
-        $this->constructFullHeader('GetTokenStatus', strlen($postXml), $headers);
-        $apiResponse = $this->sendPostRequest($postXml, $headers);
-        $apiResponse['response'] = $this->xmlToArray($apiResponse['response']); //caught xml value castted to an array
-
-        return $apiResponse;
+        $postArray = $this->getTokenDefaultArray();
+        return $this->executeSendPostRequestWithEssentials($postArray,
+            'GetTokenStatusRequest', $headers);
     }
 
     /**
@@ -98,108 +94,14 @@ class  EBayTradingApi
      */
     public function getItem($postBody): array
     {
-        try{
+        try {
             $headers = $this->headers;
-            $postBodyArray = $this->getItemPostArray($postBody);
-            $postXml = $this->getXMLFromArray($postBodyArray,'GetItemRequest');
-            $this->constructFullHeader('GetItem',strlen($postXml),$headers);
-            $apiResponse = $this->sendPostRequest($postXml, $headers);
-            $apiResponse['response'] = $this->xmlToArray($apiResponse['response']); //caught xml value castted to an array
-
-            return $apiResponse;
-        }catch(Exception $e){
+            $postArray = $this->getItemPostArray($postBody);
+            return $this->executeSendPostRequestWithEssentials($postArray,
+                'GetItemRequest', $headers);
+        } catch (Exception $e) {
             throw new \Exception($e->getMessage());
         }
-    }
-
-    /**
-     * ==> AddFixedPriceItem Endpoint <==
-     * call will be made by the function
-     * while it calls.
-     * @param $postBody
-     *
-     *   Gotten response xml , http_code & response status return as following associative array
-     * @return array
-     */
-    public function addFixedPriceItem($postBody): array{
-        $headers = $this->headers;
-        if(!$this->isThisType($postBody,'array'))
-            throw new \Exception('Invalid parameter: Array Expected');
-        $postArray = $this->getAddFixedPriceItemArray($postBody);
-        $postXml = $this->getXMLFromArray($postArray,'AddFixedPriceItemRequest');
-        $this->constructFullHeader('AddFixedPriceItem',strlen($postXml),$headers);
-        $apiResponse = $this->sendPostRequest($postXml, $headers);
-        $apiResponse['response'] = $this->xmlToArray($apiResponse['response']); //caught xml value castted to an array
-
-        return $apiResponse;
-    }
-
-    /**
-     * ==> ReviseFixedPriceItem Endpoint <==
-     * call will be made by the function
-     * while it calls.
-     * @param $postBody
-     *
-     *   Gotten response xml , http_code & response status return as following associative array
-     * @return array
-     */
-    public function reviseFixedPriceItem($postBody): array{
-        $headers = $this->headers;
-        if(!$this->isThisType($postBody,'array'))
-            throw new \Exception('Invalid parameter: Array Expected');
-        $postArray = $this->getReviseFixedPriceItemArray($postBody);
-        $postXml = $this->getXMLFromArray($postArray,'ReviseFixedPriceItemRequest');
-        $this->constructFullHeader('ReviseFixedPriceItem',strlen($postXml),$headers);
-        $apiResponse = $this->sendPostRequest($postXml, $headers);
-        $apiResponse['response'] = $this->xmlToArray($apiResponse['response']);
-
-        return $apiResponse;
-    }
-
-    /**
-     * ==> RelistFixedPriceItem Endpoint <==
-     * call will be made by the function
-     * while it calls.
-     * @param $postBody
-     *
-     *   Gotten response xml , http_code & response status return as following associative array
-     * @return array
-     * @throws \Exception
-     */
-    public function relistFixedPriceItem($postBody):array{
-        $headers = $this->headers;
-        if(!$this->isThisType($postBody,'array'))
-            throw new \Exception('Invalid parameter: Array Expected');
-        $postArray = $this->getRelistFixedPriceItemArray($postBody);
-        $postXml = $this->getXMLFromArray($postArray,'RelistFixedPriceItemRequest');
-        $this->constructFullHeader('RelistFixedPriceItem',strlen($postXml),$headers);
-        $apiResponse = $this->sendPostRequest($postXml,$headers);
-        $apiResponse['response'] = $this->xmlToArray($apiResponse['response']);
-
-        return $apiResponse;
-    }
-
-    /**
-     * ==> ReviseInventoryStatus Endpoint <==
-     * call will be made by the function
-     * while it calls.
-     * @param $postBody
-     *
-     *      Gotten response xml , http_code & response status return as following associative array
-     * @return array
-     * @throws \Exception
-     */
-    public function reviseInventoryStatus($postBody):array{
-        $headers = $this->headers;
-        if(!$this->isThisType($postBody,'array'))
-            throw new \Exception('Invalid parameter: array expected');
-        $postArray = $this->getReviseInventoryStatusArray($postBody);
-        $postXml = $this->getXMLFromArray($postArray,'ReviseInventoryStatusRequest');
-        $this->constructFullHeader('ReviseInventoryStatus',strlen($postXml),$headers);
-        $apiResponse = $this->sendPostRequest($postXml,$headers);
-        $apiResponse['response'] = $this->xmlToArray($apiResponse['response']);
-
-        return $apiResponse;
     }
 
     /**
@@ -213,19 +115,116 @@ class  EBayTradingApi
      * @return array
      * @throws \Exception
      */
-    public function getStore($postBody = null) :array{
-        try{
+    public function getStore($postBody = null): array
+    {
+        try {
             $headers = $this->headers;
             $postArray = $this->getGetStoreArray($postBody);
-            $postXml = $this->getXMLFromArray($postArray,'GetStoreRequest');
-            $this->constructFullHeader('GetStore',strlen($postXml),$headers);
-            $apiResponse = $this->sendPostRequest($postXml,$headers);
-            $apiResponse['response'] = $this->xmlToArray($apiResponse['response']);
-
-            return $apiResponse;
-        }catch (\Exception $e){
+            return $this->executeSendPostRequestWithEssentials($postArray,
+                'GetStoreRequest', $headers);
+        } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
+    }
+
+
+    /**
+     * ==> AddFixedPriceItem Endpoint <==
+     * call will be made by the function
+     * while it calls.
+     * @param $postBody
+     *
+     *   Gotten response xml , http_code & response status return as following associative array
+     * @return array
+     */
+    public function addFixedPriceItem($postBody): array
+    {
+        if (!$this->isThisType($postBody, 'array'))
+            throw new \Exception('Invalid parameter: Array Expected');
+        $headers = $this->headers;
+        $postArray = $this->getAddFixedPriceItemArray($postBody);
+        return $this->executeSendPostRequestWithEssentials($postArray,
+            'AddFixedPriceItemRequest', $headers);
+    }
+
+
+    /**
+     * ==> ReviseFixedPriceItem Endpoint <==
+     * call will be made by the function
+     * while it calls.
+     * @param $postBody
+     *
+     *   Gotten response xml , http_code & response status return as following associative array
+     * @return array
+     */
+    public function reviseFixedPriceItem($postBody): array
+    {
+        if (!$this->isThisType($postBody, 'array'))
+            throw new \Exception('Invalid parameter: Array Expected');
+        $headers = $this->headers;
+        $postArray = $this->getReviseFixedPriceItemArray($postBody);
+        return $this->executeSendPostRequestWithEssentials($postArray,
+            'ReviseFixedPriceItemRequest', $headers);
+    }
+
+    /**
+     * ==> RelistFixedPriceItem Endpoint <==
+     * call will be made by the function
+     * while it calls.
+     * @param $postBody
+     *
+     *   Gotten response xml , http_code & response status return as following associative array
+     * @return array
+     * @throws \Exception
+     */
+    public function relistFixedPriceItem($postBody): array
+    {
+        if (!$this->isThisType($postBody, 'array'))
+            throw new \Exception('Invalid parameter: Array Expected');
+        $headers = $this->headers;
+        $postArray = $this->getRelistFixedPriceItemArray($postBody);
+        return $this->executeSendPostRequestWithEssentials($postArray,
+            'RelistFixedPriceItemRequest', $headers);
+    }
+
+    /**
+     * ==> ReviseInventoryStatus Endpoint <==
+     * call will be made by the function
+     * while it calls.
+     * @param $postBody
+     *
+     *      Gotten response xml , http_code & response status return as following associative array
+     * @return array
+     * @throws \Exception
+     */
+    public function reviseInventoryStatus($postBody): array
+    {
+        $headers = $this->headers;
+        if (!$this->isThisType($postBody, 'array'))
+            throw new \Exception('Invalid parameter: array expected');
+        $postArray = $this->getReviseInventoryStatusArray($postBody);
+        return $this->executeSendPostRequestWithEssentials($postArray,
+            'ReviseInventoryStatusRequest', $headers);
+    }
+
+    /**
+     * ==> CompleteSale Endpoint <==
+     * call will be made by the function
+     * while it calls.
+     * @param $postBody
+     *
+     *      Gotten response xml , http_code & response status return as following associative array
+     * @return array
+     * @throws \Exception
+     */
+    public function completeSale($postBody): array
+    {
+        if (!$this->isThisType($postBody, 'array'))
+            throw new \Exception('Invalid parameter: array expected');
+        $headers = $this->headers;
+        $postArray = $this->getCompleteSaleArray($postBody);
+        return $this->executeSendPostRequestWithEssentials($postArray,
+            'CompleteSaleRequest', $headers);
     }
 
 
@@ -250,6 +249,30 @@ class  EBayTradingApi
         $xml = simplexml_load_string($xml, "SimpleXMLElement", LIBXML_NOCDATA);
         $json = json_encode($xml);
         return json_decode($json, TRUE);
+    }
+
+    /**
+     * ( Side Note: Making XML From postArray, making specific full headers array for the call
+     *  Sending Request , Caught Response , make an array from response xml , return http_code,
+     *  http_status, response_array)
+     *
+     *
+     * @param $postArray
+     * @param $rootName(Passed by reference)
+     * @param $headers
+     * @return array
+     */
+    private function executeSendPostRequestWithEssentials($postArray,$rootName,&$headers){
+        $rootName = trim($rootName);
+        $postXml = $this->getXMLFromArray($postArray, $rootName);
+        $this->constructFullHeader(str_replace("Request","",$rootName),
+            strlen($postXml), $headers);
+        //caught response as received it is
+        $apiResponse = $this->sendPostRequest($postXml, $headers);
+        //caught xml value castted to an array
+        $apiResponse['response'] = $this->xmlToArray($apiResponse['response']);
+
+        return $apiResponse;
     }
 
     /**
@@ -348,7 +371,8 @@ class  EBayTradingApi
      * Function sets site ID
      * @param $siteId
      */
-    private function setSiteIdAttribute($siteId){
+    private function setSiteIdAttribute($siteId)
+    {
         $this->siteId = $siteId;
     }
 
@@ -407,13 +431,14 @@ class  EBayTradingApi
      * @param $postArray
      * @return mixed
      */
-    private function setMandatoryPartsOnPostArray($postArray){
+    private function setMandatoryPartsOnPostArray($postArray)
+    {
         $postArray['RequesterCredentials'] = [
             'eBayAuthToken' => $this->token
         ];
-        if(!array_key_exists('ErrorLanguage', $postArray))
+        if (!array_key_exists('ErrorLanguage', $postArray))
             $postArray['ErrorLanguage'] = 'en_US';
-        if(!array_key_exists('WarningLevel',$postArray))
+        if (!array_key_exists('WarningLevel', $postArray))
             $postArray['WarningLevel'] = 'High';
 
         return $postArray;
@@ -435,13 +460,14 @@ class  EBayTradingApi
      * @param int $itemId
      * @return array
      */
-    private function getItemDefaultArray(int $itemId){
+    private function getItemDefaultArray(int $itemId)
+    {
         return [
-          'RequesterCredentials'=>[
-              'eBayAuthToken' => $this->token
-          ],
-          'ItemID' => $itemId
-      ];
+            'RequesterCredentials' => [
+                'eBayAuthToken' => $this->token
+            ],
+            'ItemID' => $itemId
+        ];
     }
 
     /**
@@ -451,15 +477,16 @@ class  EBayTradingApi
      * @return array|mixed
      * @throws \Exception
      */
-    private function getItemPostArray($postBody){
-        if(empty($postBody))
+    private function getItemPostArray($postBody)
+    {
+        if (empty($postBody))
             throw new \Exception('Function never works with empty parameters');
-        else if($this->isThisType($postBody,'integer')) // integer parameter set as itemID
+        else if ($this->isThisType($postBody, 'integer')) // integer parameter set as itemID
             return $this->getItemDefaultArray($postBody);
-        else if(is_string($postBody) && is_numeric($postBody)) // string type numeric value also set as itemID
-            return  $this->getItemDefaultArray((int)$postBody);
-        else if($this->isThisType($postBody,'array'))
-            return  $this->setMandatoryPartsOnPostArray($postBody);
+        else if (is_string($postBody) && is_numeric($postBody)) // string type numeric value also set as itemID
+            return $this->getItemDefaultArray((int)$postBody);
+        else if ($this->isThisType($postBody, 'array'))
+            return $this->setMandatoryPartsOnPostArray($postBody);
         else
             throw new \Exception('Invalid parameter');
     }
@@ -469,7 +496,8 @@ class  EBayTradingApi
      * @param $postBody
      * @return mixed
      */
-    private function getAddFixedPriceItemArray($postBody){
+    private function getAddFixedPriceItemArray($postBody)
+    {
         $postArray = $this->setMandatoryPartsOnPostArray($postBody);
         return $postArray;
     }
@@ -479,7 +507,8 @@ class  EBayTradingApi
      * @param $postBody
      * @return mixed
      */
-    private function getReviseFixedPriceItemArray($postBody){
+    private function getReviseFixedPriceItemArray($postBody)
+    {
         $postArray = $this->setMandatoryPartsOnPostArray($postBody);
         return $postArray;
     }
@@ -489,7 +518,8 @@ class  EBayTradingApi
      * @param $postBody
      * @return mixed
      */
-    private function getRelistFixedPriceItemArray($postBody){
+    private function getRelistFixedPriceItemArray($postBody)
+    {
         $postArray = $this->setMandatoryPartsOnPostArray($postBody);
         return $postArray;
     }
@@ -499,12 +529,14 @@ class  EBayTradingApi
      * @param $postBody
      * @return mixed
      */
-    private function getReviseInventoryStatusArray($postBody){
+    private function getReviseInventoryStatusArray($postBody)
+    {
         $postArray = $this->setMandatoryPartsOnPostArray($postBody);
         return $postArray;
     }
 
     /**
+     * Make GetStoreArray
      * (Side note: if empty parameter is passed then default array will be construct and assigned to $postArray
      *  otherwise passed array will be assigned as $postArray)
      * Finally $postarray will be appened with token , Warning level and Error Language language value
@@ -513,14 +545,15 @@ class  EBayTradingApi
      * @return array|mixed
      * @throws \Exception
      */
-    private function getGetStoreArray($postBody){
+    private function getGetStoreArray($postBody)
+    {
         $postArray = [];
-        if(is_null($postBody))
+        if (is_null($postBody))
             $postArray = [
                 'CategoryStructureOnly' => 'false',
-                'LevelLimit'=>1
+                'LevelLimit' => 1
             ];
-        else if($this->isThisType($postBody,'array'))
+        else if ($this->isThisType($postBody, 'array'))
             $postArray = $postBody;
         else
             throw new \Exception('Invalid Parameter: Array Expected');
@@ -528,6 +561,16 @@ class  EBayTradingApi
         $postArray = $this->setMandatoryPartsOnPostArray($postArray);
         return $postArray;
 
+    }
+
+    /**
+     * make full CompleteSaleArray Post Data Array by including token,Warning Level and Error Language
+     * @param $postBody
+     * @return mixed
+     */
+    private function getCompleteSaleArray($postBody){
+        $postArray = $this->setMandatoryPartsOnPostArray($postBody);
+        return $postArray;
     }
 
     /**
