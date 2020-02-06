@@ -166,7 +166,7 @@ class  EBayTradingApi
      * @return array
      * @throws \Exception
      */
-    public function relistFixedPriceItem($postBody){
+    public function relistFixedPriceItem($postBody):array{
         $headers = $this->headers;
         if(!$this->isThisType($postBody,'array'))
             throw new \Exception('Invalid parameter: Array Expected');
@@ -189,7 +189,7 @@ class  EBayTradingApi
      * @return array
      * @throws \Exception
      */
-    public function reviseInventoryStatus($postBody){
+    public function reviseInventoryStatus($postBody):array{
         $headers = $this->headers;
         if(!$this->isThisType($postBody,'array'))
             throw new \Exception('Invalid parameter: array expected');
@@ -202,7 +202,31 @@ class  EBayTradingApi
         return $apiResponse;
     }
 
+    /**
+     * ==> GetStore Endpoint <==
+     * call will be made by the function
+     * while it calls.
+     * Empty parameter or array will be accepted
+     * @param null(default) $postBody
+     *
+     *  Gotten response xml , http_code & response status return as following associative array
+     * @return array
+     * @throws \Exception
+     */
+    public function getStore($postBody = null) :array{
+        try{
+            $headers = $this->headers;
+            $postArray = $this->getGetStoreArray($postBody);
+            $postXml = $this->getXMLFromArray($postArray,'GetStoreRequest');
+            $this->constructFullHeader('GetStore',strlen($postXml),$headers);
+            $apiResponse = $this->sendPostRequest($postXml,$headers);
+            $apiResponse['response'] = $this->xmlToArray($apiResponse['response']);
 
+            return $apiResponse;
+        }catch (\Exception $e){
+            throw new \Exception($e->getMessage());
+        }
+    }
 
 
 
@@ -478,6 +502,32 @@ class  EBayTradingApi
     private function getReviseInventoryStatusArray($postBody){
         $postArray = $this->setMandatoryPartsOnPostArray($postBody);
         return $postArray;
+    }
+
+    /**
+     * (Side note: if empty parameter is passed then default array will be construct and assigned to $postArray
+     *  otherwise passed array will be assigned as $postArray)
+     * Finally $postarray will be appened with token , Warning level and Error Language language value
+     *
+     * @param $postBody
+     * @return array|mixed
+     * @throws \Exception
+     */
+    private function getGetStoreArray($postBody){
+        $postArray = [];
+        if(is_null($postBody))
+            $postArray = [
+                'CategoryStructureOnly' => 'false',
+                'LevelLimit'=>1
+            ];
+        else if($this->isThisType($postBody,'array'))
+            $postArray = $postBody;
+        else
+            throw new \Exception('Invalid Parameter: Array Expected');
+
+        $postArray = $this->setMandatoryPartsOnPostArray($postArray);
+        return $postArray;
+
     }
 
     /**
