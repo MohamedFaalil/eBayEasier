@@ -133,6 +133,7 @@ class  EBayTradingApi
 
         return $apiResponse;
     }
+
     /**
      * ==> ReviseFixedPriceItem Endpoint <==
      * call will be made by the function
@@ -169,7 +170,7 @@ class  EBayTradingApi
         $headers = $this->headers;
         if(!$this->isThisType($postBody,'array'))
             throw new \Exception('Invalid parameter: Array Expected');
-        $postArray = $this->getRelistFixedPriceItem($postBody);
+        $postArray = $this->getRelistFixedPriceItemArray($postBody);
         $postXml = $this->getXMLFromArray($postArray,'RelistFixedPriceItemRequest');
         $this->constructFullHeader('RelistFixedPriceItem',strlen($postXml),$headers);
         $apiResponse = $this->sendPostRequest($postXml,$headers);
@@ -178,6 +179,28 @@ class  EBayTradingApi
         return $apiResponse;
     }
 
+    /**
+     * ==> ReviseInventoryStatus Endpoint <==
+     * call will be made by the function
+     * while it calls.
+     * @param $postBody
+     *
+     *      Gotten response xml , http_code & response status return as following associative array
+     * @return array
+     * @throws \Exception
+     */
+    public function reviseInventoryStatus($postBody){
+        $headers = $this->headers;
+        if(!$this->isThisType($postBody,'array'))
+            throw new \Exception('Invalid parameter: array expected');
+        $postArray = $this->getReviseInventoryStatusArray($postBody);
+        $postXml = $this->getXMLFromArray($postArray,'ReviseInventoryStatusRequest');
+        $this->constructFullHeader('ReviseInventoryStatus',strlen($postXml),$headers);
+        $apiResponse = $this->sendPostRequest($postXml,$headers);
+        $apiResponse['response'] = $this->xmlToArray($apiResponse['response']);
+
+        return $apiResponse;
+    }
 
 
 
@@ -442,7 +465,17 @@ class  EBayTradingApi
      * @param $postBody
      * @return mixed
      */
-    private function getRelistFixedPriceItem($postBody){
+    private function getRelistFixedPriceItemArray($postBody){
+        $postArray = $this->setMandatoryPartsOnPostArray($postBody);
+        return $postArray;
+    }
+
+    /**
+     * make full ReviseInventoryStatusArray Post Data Array by including token,Warning Level and Error Language
+     * @param $postBody
+     * @return mixed
+     */
+    private function getReviseInventoryStatusArray($postBody){
         $postArray = $this->setMandatoryPartsOnPostArray($postBody);
         return $postArray;
     }
