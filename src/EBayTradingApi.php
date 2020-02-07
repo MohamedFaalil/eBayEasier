@@ -1,9 +1,8 @@
 <?php
 
-
 namespace ebay\ebaySimplifier;
-require dirname(__FILE__) . '/../vendor/autoload.php';
 
+use GuzzleHttp\Client;
 use Spatie\ArrayToXml\ArrayToXml;
 
 
@@ -351,7 +350,7 @@ class  EBayTradingApi
      */
     private function sendPostRequest(string $post, array $headers): array
     {
-        $client = new \GuzzleHttp\Client();
+        $client = new Client();
         $response = $client->request('POST', $this->url, [
             'body' => $post,
             'headers' => $headers
