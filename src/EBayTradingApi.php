@@ -1,6 +1,6 @@
 <?php
 
-namespace Ebay\EbaySimplifier;
+namespace Ebay\EbaySimplifier\78;
 
 use GuzzleHttp\Client;
 use Spatie\ArrayToXml\ArrayToXml;
