@@ -660,7 +660,11 @@ class  EBayTradingApi
     {
         try {
             $tokenResponse = $this->getTokenStatus();
-            if (strtolower($tokenResponse['response']['TokenStatus']['Status']) != 'active')
+            if(strtolower($tokenResponse['response']['Ack']) != 'success')
+                throw new \Exception($tokenResponse['response']['Errors']['ShortMessage'] . ' , ' .
+                    $tokenResponse['response']['Errors']['LongMessage'] . 'Error Code : ' .
+                    $tokenResponse['response']['Errors']['ErrorCode']);
+            else if (strtolower($tokenResponse['response']['TokenStatus']['Status']) != 'active')
                 throw new \Exception($tokenResponse['response']['TokenStatus']['Status']);
             return true;
         } catch (\Exception $e) {
