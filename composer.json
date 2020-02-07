@@ -1,7 +1,7 @@
 {
     "name": "ebay/simplifier",
     "description": "The Project Implemented to work with Ebay api endpoint,It reduces more time to people who are switched this area newly",
-    "keywords": ["eBay","eBay-simplifier","eBaySimplifier","eBay Trading Apigit "],
+    "keywords": ["eBay","eBay-simplifier","eBaySimplifier","eBay Trading Api"],
     "type": "library",
     "license": "MIT",
     "authors": [
