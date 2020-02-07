@@ -5,7 +5,7 @@ The Package will make easy to handle ebay api calls
 <hr/>
 <ol>
     <li>PHP > 7.1</li>
-    <li>Laravel 5.x|6.x</li>
+    <li>Laravel 5.x | 6.x</li>
 </ol>
 
 #### 02.Installation
@@ -14,7 +14,7 @@ The Package will make easy to handle ebay api calls
 
 1. Install Composer to your local/development environment 
 2. Run command
-    <code>composer require ebay/ebay_easier</code>
+    <code>composer require ebay/ebay-simplifier</code>
 3. Require Composer's autoloader by adding the following line to your code.
     <code>require 'vendor/autoload.php';</code> 
 4. use namespace of the package 
