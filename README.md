@@ -184,7 +184,7 @@ try{
     ------------ More --------------
    ];
 
-    $response = $ebayTrading->getItem($postBody);
+    $response = $ebayTrading->getItem();
 
     print_r($response);
 }catch(Exception $e){
