@@ -1,15 +1,14 @@
 <?php
 
 
-namespace ebay\eBayEasier;
+namespace ebay\ebaySimplifier;
 require dirname(__FILE__) . '/../vendor/autoload.php';
 
 use Spatie\ArrayToXml\ArrayToXml;
 
 
 /**
- * Class EBayTradingApi
- * Compatibility Level 1131
+ * Class EBayTradingApi ( Compatibility Level 1131 )
  * @package ebay\src
  */
 class  EBayTradingApi
@@ -108,10 +107,11 @@ class  EBayTradingApi
      * ==> GetStore Endpoint <==
      * call will be made by the function
      * while it calls.
+     *
      * Empty parameter or array will be accepted
      * @param null(default) $postBody
      *
-     *  Gotten response xml , http_code & response status return as following associative array
+     * Gotten response xml , http_code & response status return as following associative array
      * @return array
      * @throws \Exception
      */
@@ -127,6 +127,24 @@ class  EBayTradingApi
         }
     }
 
+    /**
+     * ==> GetOrders Endpoint <==
+     * call will be made by the function
+     * while it calls.
+     * @param $postBody
+     *
+     *  Gotten response xml , http_code & response status  return as following associative array
+     * @return array
+     * @throws \Exception
+     */
+    public function getOrders($postBody){
+        if (!$this->isThisType($postBody, 'array'))
+            throw new \Exception('Invalid parameter: Array Expected');
+        $headers = $this->headers;
+        $postArray = $this->getOrdersArray($postBody);
+        return $this->executeSendPostRequestWithEssentials($postArray,
+            'GetOrdersRequest', $headers);
+    }
 
     /**
      * ==> AddFixedPriceItem Endpoint <==
@@ -146,7 +164,6 @@ class  EBayTradingApi
         return $this->executeSendPostRequestWithEssentials($postArray,
             'AddFixedPriceItemRequest', $headers);
     }
-
 
     /**
      * ==> ReviseFixedPriceItem Endpoint <==
@@ -246,9 +263,60 @@ class  EBayTradingApi
      */
     private function xmlToArray(string $xml): array
     {
-        $xml = simplexml_load_string($xml, "SimpleXMLElement", LIBXML_NOCDATA);
-        $json = json_encode($xml);
-        return json_decode($json, TRUE);
+        $previous_value = libxml_use_internal_errors(true);
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $dom->preserveWhiteSpace = false;
+        $dom->loadXml($xml);
+        libxml_use_internal_errors($previous_value);
+        if (libxml_get_errors()) {
+            return [];
+        }
+
+        $resultArray = $this->DOMtoArray($dom);
+        return $resultArray[$dom->documentElement->tagName];
+    }
+
+    /**
+     * Helper function of xmlToArray
+     * @param $root
+     * @return array|mixed
+     */
+    private function DOMtoArray($root) {
+        $result = array();
+
+        if ($root->hasAttributes()) {
+            $attrs = $root->attributes;
+            foreach ($attrs as $attr) {
+                $result['@attributes'][$attr->name] = $attr->value;
+            }
+        }
+
+        if ($root->hasChildNodes()) {
+            $children = $root->childNodes;
+            if ($children->length == 1) {
+                $child = $children->item(0);
+                if (in_array($child->nodeType,[XML_TEXT_NODE,XML_CDATA_SECTION_NODE])) {
+                    $result['_value'] = $child->nodeValue;
+                    return count($result) == 1
+                        ? $result['_value']
+                        : $result;
+                }
+
+            }
+            $groups = array();
+            foreach ($children as $child) {
+                if (!isset($result[$child->nodeName])) {
+                    $result[$child->nodeName] = $this->DOMtoArray($child);
+                } else {
+                    if (!isset($groups[$child->nodeName])) {
+                        $result[$child->nodeName] = array($result[$child->nodeName]);
+                        $groups[$child->nodeName] = 1;
+                    }
+                    $result[$child->nodeName][] = $this->DOMtoArray($child);
+                }
+            }
+        }
+        return $result;
     }
 
     /**
@@ -569,6 +637,16 @@ class  EBayTradingApi
      * @return mixed
      */
     private function getCompleteSaleArray($postBody){
+        $postArray = $this->setMandatoryPartsOnPostArray($postBody);
+        return $postArray;
+    }
+
+    /**
+     * make full getOrdersArray Post Data Array by including token,Warning Level and Error Language
+     * @param $postBody
+     * @return mixed
+     */
+    private function getOrdersArray($postBody){
         $postArray = $this->setMandatoryPartsOnPostArray($postBody);
         return $postArray;
     }
