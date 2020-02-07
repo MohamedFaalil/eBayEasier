@@ -1,33 +1,69 @@
-#### EBayApi-Simplifier (1131) <hr/>
+<h1>EBayApi-Simplifier (1131)</h1> 
 The Package will make easy to handle ebay api calls
 
 #### 01. Requirement
 <hr/>
 <ol>
-    <li>PHP > 7.1</li>
+    <li><b>PHP > 7.1</b></li>
     <li>Laravel 5.x | 6.x</li>
 </ol>
 
 #### 02.Installation
 <hr/>
-###### The SDK can be installed with <a href="https://getcomposer.org/">Composer</a>.
+<b>The Library can be installed with <a href="https://getcomposer.org/">Composer</a></b>.
 
 1. Install Composer to your local/development environment 
 2. Run command
     <code>composer require ebay/ebay-simplifier</code>
-3. Require Composer's autoloader by adding the following line to your code.
+3. Import/Require Composer's autoloader by adding the following line on your code.
     <code>require 'vendor/autoload.php';</code> 
 4. use namespace of the package 
    <code>use ebay\ebaySimplifier\EBayTradingApi;</code>  
 
 #### 03. Developer Guide
 <hr/>
-Following calls are mostly expected an associative array as parameter which needs to construct according<br/>
- specific eBay API calls. Refer eBay Trading API [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/index.html) while using each specific function. <b>No need to worry about 
- XML root</b> just construct <b>inner key, values</b> correctly
+<p>Following calls are mostly expected an associative array as parameter which needs to construct according
+ specific eBay API calls. Refer the eBay Trading API <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/index.html">Documentation</a> while using each specific function.</p>
+<p><b>No need to worry about 
+ XML root</b> just construct <b>inner key, value</b> pairs correctly</p>
+Eg: Consider the Following Request XML
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<GetStoreRequest xmlns="urn:ebay:apis:eBLBaseComponents">
+  <RequesterCredentials>
+    <eBayAuthToken>ABC...123</eBayAuthToken>
+  </RequesterCredentials>
+  <!-- Call-specific Input Fields -->
+  <CategoryStructureOnly> boolean </CategoryStructureOnly>
+  <LevelLimit> int </LevelLimit>
+  <RootCategoryID> long </RootCategoryID>
+  <UserID> UserIDType (string) </UserID>
+  <!-- Standard Input Fields -->
+  <ErrorLanguage> string </ErrorLanguage>
+  <MessageID> string </MessageID>
+  <Version> string </Version>
+  <WarningLevel> WarningLevelCodeType </WarningLevel>
+</GetStoreRequest>
+```
+Make an array simply as following
+
+```php
+$post_data = [
+    'CategoryStructureOnly' => 'bool',
+    'LevelLimit' => 'int',
+    'RootCategoryID' =>'long',
+    'UserID' => 'string',
+    'MessageID' => 'string',
+    'Version' => 'string',
+];
+```
+ErrorLanguage and WarningLevel fields are set by default respectively <b>en_US , High</b> If wants to change default values can simply over ride by setting the those key, value pair on the array.
+<br/><b>Note : RequesterCredentials with token will be set by constructer parameter. So just ignore it.</b>
+
 <ol>
 <li>
- <h5>Instantiate the object</h5><hr/> 
+ <h5>Instantiate the eBay Trading API object</h5><hr/> 
 
  ```php
 try{
@@ -36,12 +72,12 @@ try{
     print 'Error ' . $e->getMessage();
 }
  ```
-Respectively token , devId, appId , certId, url, siteId are required for the constructer method. Above credentials are more important to make each http hits.
+<b>Note: Respectively token , devId, appId , certId, url, siteId are required for the constructor method.</b>
 </li>
 <li>
  <h5>getTokenStatus() method.</h5><hr/>
- Method **no required** any parameters.
- Method returns an array with respective value such following
+ Method <b>No Required</b> any parameters.
+ Method returns an array with respective key,value pair as an array.
 
 ```php
       [
@@ -85,17 +121,17 @@ Array(
 ```
 </li>
 <li>
- <h5>getItem($postBody) method.</h5><hr/>
+ <h5>getItem() method.</h5><hr/>
 The GetItem call returns listing data such as title, description, price information, user information, and so on, for the specified ItemID.<br/>
 
 Function requires a parameter. which may be<br/>
-**(int/string) itemId** or **an associative array** as postBody according eBay API [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetItem.html#input). <br/>
+**(int/string) itemId** or **an associative array** as postBody according eBay API [**Requirements**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetItem.html#input). <br/>
 **Eg :-**
 ```php
 try{
     $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
     $postBody = 178218224608;
-    // --- or ---
+    // --- OR ---
     $postBody = [
         'IncludeItemCompatibilityList' => (bool),
         'IncludeItemSpecifics' => (bool),
@@ -160,15 +196,15 @@ Array
                         )
 
                     [PrivateListing] => false
- --------------------------- more
+ // --------------------------- MORE --------------
 )
 ```
 </li>
 <li>
 <h5>getStore() method.</h5><hr/>
-Use this call to retrieve configuration information for the eBay store owned by the user specified with UserID. If you do not specify a UserID, the store configuration information is returned for the authenticated caller.<br/>
+Use this call to retrieve configuration information for the eBay store owned by the user specified with UserID. If you do not specify a UserID, the store configuration information is returned for the authenticated caller <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetItem.html">( API DOCUMENTATION) </a><br/>
 
-**empty parameter** or **an associative array** as postBody according eBay API [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetStore.html#Input). <br/>
+**Empty parameter** or **An Associative array** as postBody according eBay API [**Requirement**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetStore.html#Input). <br/>
 **Eg:**
 ```php
 try{
@@ -181,7 +217,7 @@ try{
    	'LevelLimit' => 
    	'RootCategoryID' => 
    	'UserID' => 
-    ------------ More --------------
+    // ------------ More --------------
    ];
 
     $response = $ebayTrading->getItem();
@@ -223,16 +259,16 @@ array (
       ),
       '__text' => 'StoreCustomCategoryArrayType',
     ),
------------- More -----------------
+// ------------ More -----------------
 ```
 </li>
 <li>
   <h5>getOrders() method.</h5><hr/>
   
 GetOrders is the recommended call to use for order (sales) management. Use this call to retrieve all orders in which the authenticated caller is either the buyer or seller. The order types that can be retrieved
-with this call are discussed see eBay [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetOrders.html)  
+with this call are discussed on eBay [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetOrders.html)  
 
-Expected [**an associative array**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetOrders.html#Input)
+Expected [**an associative array**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetOrders.html#Input) as parameter for the function calling.
 **Eg:**
 ```php
 try{
@@ -241,7 +277,7 @@ try{
         'CreateTimeFrom' => 
         'CreateTimeTo' => 
         'OrderRole' => 
-        ------------ More --------------
+        // ------------ More --------------
        ];
 
     $response = $ebayTrading->getOrders($postBody);   
@@ -271,7 +307,7 @@ try{
                         ]
                      ],
     
-    ------------ More ---------------
+    // ------------ More ---------------
 ];
 ``` 
 </li>
@@ -279,7 +315,7 @@ try{
  <h5>addFixedPriceItem()  method.</h5><hr/>
 Use this call to define and list a new fixed-price item. This call returns the item ID for the new listing,<br/>
 plus an estimation of the fees the seller will incur for posting the listing (not including the Final Value Fee,<br/>
-which cannot be calculated until the listing has ended).<br/>
+which cannot be calculated until the listing has ended) (Detail From <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/AddFixedPriceItem.html">Documentation</a>).<br/>
 
 Function requires a parameter as [**an associative array**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/AddFixedPriceItem.html#Input) . 
 ```php
@@ -297,7 +333,7 @@ try{
     
                 ['Name' => (string),'Value' => (string)],
                 ['Name' => (string),'Value' => (string)]
-                ---------------------------------------more
+                ----------------------------more------------------
             ]
             
         ],
@@ -332,16 +368,15 @@ array (
               array (
               ),
             ),
------------More ------
+// -----------More ------
 ```
 </li>
 <li>
     <h5>reviseFixedPriceItem() method</h5><hr/>
     Use this call to change the properties of a currently active fixed-price listing (including multi-variation listings). 
-    
-   [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/ReviseFixedPriceItem.html) <br/>
+    <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/ReviseFixedPriceItem.html">Documentation</a> <br/>
    
-   Please [**refer the documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/ReviseFixedPriceItem.html#Input) before construct the associative array
+   Please [**refer the documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/ReviseFixedPriceItem.html#Input) before construct the parameter array
 ```php
 $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
 
@@ -367,7 +402,7 @@ $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
         				                   ],
         			                         ]
         		                ],
-        ------------More Variation-------------
+        // ------------More Variation-------------
         		            ] //variations end
         ];
     
@@ -411,12 +446,10 @@ $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
 <li>
     <h5>relistFixedPriceItem() method</h5><hr/>
     Use this call to relist a single fixed-price item or a single multi-item listing that has ended. The item may be relisted as it was originally defined, or the seller may change
-       
-
-   [**.....**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/RelistFixedPriceItem.html) <br/>
+       <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/RelistFixedPriceItem.html">(Details Source)</a><br/>
    
-   **Function Requires an array by setting post data**
-   Please [**refer the documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/RelistFixedPriceItem.html#Input) before construct the associative array
+   **Function Requires an array as parameter**
+   Please [**refer the documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/RelistFixedPriceItem.html#Input) before construct the  array
 ```php
 $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
 
@@ -442,7 +475,7 @@ $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
         				                   ],
         			                         ]
         		                ],
-        ------------More Variation-------------
+        // ------------More Variation-------------
         		            ] //variations end
         ];
     
@@ -465,17 +498,15 @@ $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
             
          ]       
     ],
-	---- More --- 
+	// ---- More --- 
 ];
 ```    
 </li>
 <li>
     <h5>reviseInventoryStatus() method</h5><hr/>
-    his call enables a seller to change the price and/or quantity of up to four active, fixed-price listings. The fixed-price listing(s) to modify are   
-
-   [**.....**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/ReviseInventoryStatus) <br/>
+    This call enables a seller to change the price and/or quantity of up to four active, fixed-price listings. The fixed-price listing(s) to modify are  <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/ReviseInventoryStatus">................... (Visit documentation page for more details)</a> <br/>
    
-   **Function Requires an array by setting post data**
+   **Function Requires an array as parameter**.
    Please [**refer the documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/ReviseInventoryStatus.html#Input) before construct the associative array
 ```php
 $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
@@ -493,11 +524,11 @@ $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
                     ]       
         	          
         		],
-        ------------More Variation-------------
+        // ------------More Variation-------------
         		            ] //variations end
         ];
     
-            $response = $ebayTrading->relistFixedPriceItem($post_data);
+            $response = $ebayTrading->reviseInventoryStatus($post_data);
             print_r($response);
         }catch(Exception $e){
             print 'Error ' . $e->getMessage();
@@ -509,52 +540,10 @@ Array
 (
     [ReviseInventoryStatusResponse] => Array
         (
-            [#comment] => Array
-                (
-                    [0] => Array
-                        (
-                        )
-
-                    [1] => Array
-                        (
-                        )
-
-                    [2] => Array
-                        (
-                        )
-
-                    [3] => Array
-                        (
-                        )
-
-                    [4] => Array
-                        (
-                        )
-
-                )
-
+     
             [Fees] => Array
                 (
-                    [#text] => Array
-                        (
-                            [0] => Array
-                                (
-                                )
-
-                            [1] => Array
-                                (
-                                )
-
-                            [2] => Array
-                                (
-                                )
-
-                            [3] => Array
-                                (
-                                )
-
-                        )
-
+           
                     [Fee] => Array
                         (
                             [#text] => Array
@@ -625,7 +614,7 @@ Array
     This <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/CompleteSale.html">API call</a> Use to do various tasks after the creation of a single line item or multiple line item order.
     <br/>
    
-   **Function Requires an array by setting post data**
+   **Function Requires an array. **
    Please <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/CompleteSale.html#Input">refer the documentation</a> before construct the associative array
 ```php
         $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
@@ -656,41 +645,7 @@ Array
             [CorrelationID] =>  string
             [Errors] => Array
                 (
-                    [#text] => Array
-                        (
-                            [0] => Array
-                                (
-                                )
-
-                            [1] => Array
-                                (
-                                )
-
-                            [2] => Array
-                                (
-                                )
-
-                            [3] => Array
-                                (
-                                )
-
-                            [4] => Array
-                                (
-                                )
-
-                            [5] => Array
-                                (
-                                )
-
-                            [6] => Array
-                                (
-                                )
-
-                            [7] => Array
-                                (
-                                )
-
-                        )
+                    
 
                     [ErrorClassification] =>  ErrorClassificationCodeType
                     [ErrorCode] =>  token
@@ -701,23 +656,8 @@ Array
                                     [ParamID] => string
                                 )
 
-                            [#text] => Array
-                                (
-                                    [0] => Array
-                                        (
-                                        )
-
-                                    [1] => Array
-                                        (
-                                        )
-
-                                )
-
+                    
                             [Value] =>  string
-                        )
-
-                    [#comment] => Array
-                        (
                         )
 
                     [LongMessage] =>  string
