@@ -10,7 +10,7 @@ The Package will make easy to handle ebay api calls
 
 #### 02.Installation
 <hr/>
-<b>The Library can be installed with <a href="https://getcomposer.org/">Composer</a></b>.
+<b>Library can be installed with <a href="https://getcomposer.org/">Composer</a></b>.
 
 1. Install Composer to your local/development environment 
 2. Run command
@@ -220,7 +220,7 @@ try{
     // ------------ More --------------
    ];
 
-    $response = $ebayTrading->getItem();
+    $response = $ebayTrading->getStore();
 
     print_r($response);
 }catch(Exception $e){
