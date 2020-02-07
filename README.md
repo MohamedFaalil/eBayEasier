@@ -10,7 +10,7 @@ The Package will make easy to handle ebay api calls
 
 #### 02.Installation
 <hr/>
-###### The SDK can be installed with [**Composer**](https://getcomposer.org/).
+###### The SDK can be installed with <a href="https://getcomposer.org/">Composer</a>.
 
 1. Install Composer to your local/development environment 
 2. Run command
@@ -121,7 +121,7 @@ try{
     print 'Error ' . $e->getMessage();
 }
 ```
-Sample Output :-
+<a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetItem.html#Output">Sample Output :-</a>
 
 ```php
 Array
@@ -165,7 +165,7 @@ Array
 ```
 </li>
 <li>
-<h5>getStore($postBody) method.</h5><hr/>
+<h5>getStore() method.</h5><hr/>
 Use this call to retrieve configuration information for the eBay store owned by the user specified with UserID. If you do not specify a UserID, the store configuration information is returned for the authenticated caller.<br/>
 
 **empty parameter** or **an associative array** as postBody according eBay API [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetStore.html#Input). <br/>
@@ -191,7 +191,7 @@ try{
     print 'Error ' . $e->getMessage();
 }
 ```
-Sample Output :-
+<a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetItem.html#Output">Sample Output :-</a>
 
 ```php
 array (
@@ -227,7 +227,7 @@ array (
 ```
 </li>
 <li>
-  <h5>getOrders($postBody) method.</h5><hr/>
+  <h5>getOrders() method.</h5><hr/>
   
 GetOrders is the recommended call to use for order (sales) management. Use this call to retrieve all orders in which the authenticated caller is either the buyer or seller. The order types that can be retrieved
 with this call are discussed see eBay [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetOrders.html)  
@@ -250,7 +250,7 @@ try{
     print 'Error ' . $e->getMessage();
 }
 ```
-Sample Output :-
+<a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetOrders.html#Output">Sample Output :-</a>
 ```php
 [
     'HasMoreOrders' => ,
@@ -276,7 +276,7 @@ Sample Output :-
 ``` 
 </li>
 <li>
- <h5>addFixedPriceItem($postBody)  method.</h5><hr/>
+ <h5>addFixedPriceItem()  method.</h5><hr/>
 Use this call to define and list a new fixed-price item. This call returns the item ID for the new listing,<br/>
 plus an estimation of the fees the seller will incur for posting the listing (not including the Final Value Fee,<br/>
 which cannot be calculated until the listing has ended).<br/>
@@ -311,7 +311,7 @@ try{
     print 'Error ' . $e->getMessage();
 }
 ``` 
-Sample Output:
+<a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/AddFixedPriceItem.html#Output">Sample Output:</a>
 ```php
 array (
   'name' => 'AddFixedPriceItemResponse',
@@ -336,7 +336,7 @@ array (
 ```
 </li>
 <li>
-    <h5>reviseFixedPriceItem($postBody) method</h5><hr/>
+    <h5>reviseFixedPriceItem() method</h5><hr/>
     Use this call to change the properties of a currently active fixed-price listing (including multi-variation listings). 
     
    [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/ReviseFixedPriceItem.html) <br/>
@@ -409,7 +409,7 @@ $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
      
 </li>
 <li>
-    <h5>relistFixedPriceItem($postBody) method</h5><hr/>
+    <h5>relistFixedPriceItem() method</h5><hr/>
     Use this call to relist a single fixed-price item or a single multi-item listing that has ended. The item may be relisted as it was originally defined, or the seller may change
        
 
