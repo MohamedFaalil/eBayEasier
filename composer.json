@@ -1,5 +1,5 @@
 {
-    "name": "ebay/eaby-simplifier",
+    "name": "ebay/ebay-simplifier",
     "description": "The Project Implemented to work with Ebay api endpoint,It reduces more time to people who are switched this area newly",
     "keywords": ["eBay","eBay-simplifier","eBaySimplifier","eBay Trading Api"],
     "type": "library",
