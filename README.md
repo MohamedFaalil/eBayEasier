@@ -519,7 +519,7 @@ $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
 </li>
 <li>
     <h5 id="9">reviseInventoryStatus() method</h5><hr/>
-    This call enables a seller to change the price and/or quantity of up to four active, fixed-price listings. The fixed-price listing(s) to modify are  <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/ReviseInventoryStatus">................... (Visit documentation page for more details)</a> <br/>
+    This call enables a seller to change the price and/or quantity of up to four active, fixed-price listings. The fixed-price listing(s) to modify are  <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/ReviseInventoryStatus.html">................... (Visit documentation page for more details)</a> <br/>
    
    **Function Requires an array as parameter**.
    Please [**refer the documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/ReviseInventoryStatus.html#Input) before construct the associative array
