@@ -2,11 +2,20 @@
 The Package will make easy to handle ebay api calls
 
 # My Table of content
-<ul>
-  <li> [Requirement](#requirement) </li>
-  <li> [Installation](#installation) </li>
-  <li> [Developer Guide](#guide) </li>
-</ul>
+01. [Requirement](#requirement) 
+02. [Installation](#installation)
+03. [Developer Guide](#guide) <br/>
+    i.    [Instantiate the eBay Trading API object](#1) <br/>
+    ii.   [getTokenStatus() method.](#2) <br/>
+    iii.  [getItem() method.](#3) <br/>
+    iv.   [getStore() method.](#4) <br/>
+    v.    [getOrders() method.](#5) <br/>
+    vi.   [addFixedPriceItem() method.](#6) <br/>
+    vii.  [reviseFixedPriceItem() method](#7) <br/>
+    viii. [relistFixedPriceItem() method](#8) <br/>
+    ix.   [reviseInventoryStatus() method](#9) <br/>
+    x.    [completeSale() method](#10) <br/>
+
 #### <span id="requirement">01. Requirement</span>
 <hr/>
 <ol>
@@ -69,7 +78,7 @@ ErrorLanguage and WarningLevel fields are set by default respectively <b>en_US ,
 
 <ol>
 <li>
- <h5>Instantiate the eBay Trading API object</h5><hr/> 
+ <h5 id="1">Instantiate the eBay Trading API object</h5><hr/> 
 
  ```php
 try{
@@ -81,7 +90,7 @@ try{
 <b>Note: Respectively token , devId, appId , certId, url, siteId are required for the constructor method.</b>
 </li>
 <li>
- <h5>getTokenStatus() method.</h5><hr/>
+ <h5 id="2">getTokenStatus() method.</h5><hr/>
  Method <b>No Required</b> any parameters.
  Method returns an array with respective key,value pair as an array.
 
@@ -127,7 +136,7 @@ Array(
 ```
 </li>
 <li>
- <h5>getItem() method.</h5><hr/>
+ <h5 id="3">getItem() method.</h5><hr/>
 The GetItem call returns listing data such as title, description, price information, user information, and so on, for the specified ItemID.<br/>
 
 Function requires a parameter. which may be<br/>
@@ -207,7 +216,7 @@ Array
 ```
 </li>
 <li>
-<h5>getStore() method.</h5><hr/>
+<h5 id="4">getStore() method.</h5><hr/>
 Use this call to retrieve configuration information for the eBay store owned by the user specified with UserID. If you do not specify a UserID, the store configuration information is returned for the authenticated caller <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetItem.html">( API DOCUMENTATION) </a><br/>
 
 **Empty parameter** or **An Associative array** as postBody according eBay API [**Requirement**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetStore.html#Input). <br/>
@@ -269,7 +278,7 @@ array (
 ```
 </li>
 <li>
-  <h5 id="getOrders">getOrders() method.</h5><hr/>
+  <h5 id="5">getOrders() method.</h5><hr/>
   
 GetOrders is the recommended call to use for order (sales) management. Use this call to retrieve all orders in which the authenticated caller is either the buyer or seller. The order types that can be retrieved
 with this call are discussed on eBay [**Documentation**](https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/GetOrders.html)  
@@ -318,7 +327,7 @@ try{
 ``` 
 </li>
 <li>
- <h5>addFixedPriceItem()  method.</h5><hr/>
+ <h5 id="6">addFixedPriceItem()  method.</h5><hr/>
 Use this call to define and list a new fixed-price item. This call returns the item ID for the new listing,<br/>
 plus an estimation of the fees the seller will incur for posting the listing (not including the Final Value Fee,<br/>
 which cannot be calculated until the listing has ended) (Detail From <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/AddFixedPriceItem.html">Documentation</a>).<br/>
@@ -378,7 +387,7 @@ array (
 ```
 </li>
 <li>
-    <h5>reviseFixedPriceItem() method</h5><hr/>
+    <h5 id="7">reviseFixedPriceItem() method</h5><hr/>
     Use this call to change the properties of a currently active fixed-price listing (including multi-variation listings). 
     <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/ReviseFixedPriceItem.html">Documentation</a> <br/>
    
@@ -450,7 +459,7 @@ $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
      
 </li>
 <li>
-    <h5>relistFixedPriceItem() method</h5><hr/>
+    <h5 id="8">relistFixedPriceItem() method</h5><hr/>
     Use this call to relist a single fixed-price item or a single multi-item listing that has ended. The item may be relisted as it was originally defined, or the seller may change
        <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/RelistFixedPriceItem.html">(Details Source)</a><br/>
    
@@ -509,7 +518,7 @@ $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
 ```    
 </li>
 <li>
-    <h5>reviseInventoryStatus() method</h5><hr/>
+    <h5 id="9">reviseInventoryStatus() method</h5><hr/>
     This call enables a seller to change the price and/or quantity of up to four active, fixed-price listings. The fixed-price listing(s) to modify are  <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/ReviseInventoryStatus">................... (Visit documentation page for more details)</a> <br/>
    
    **Function Requires an array as parameter**.
@@ -616,7 +625,7 @@ Array
 ```    
 </li>
 <li>
-    <h5>completeSale() method</h5><hr/>
+    <h5 id="10">completeSale() method</h5><hr/>
     This <a href="https://developer.ebay.com/Devzone/XML/docs/Reference/eBay/CompleteSale.html">API call</a> Use to do various tasks after the creation of a single line item or multiple line item order.
     <br/>
    
