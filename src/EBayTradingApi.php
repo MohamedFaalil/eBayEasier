@@ -270,6 +270,14 @@ class  EBayTradingApi
             return [];
         }
 
+        $xpath = new \DOMXPath($dom);
+
+        while (($node_list = $xpath->query('//*[not(*) and not(@*) and not(text()[normalize-space()])]')) && $node_list->length) {
+            foreach ($node_list as $node) {
+                $node->parentNode->removeChild($node);
+            }
+        }
+
         $resultArray = $this->DOMtoArray($dom);
         return $resultArray[$dom->documentElement->tagName];
     }
