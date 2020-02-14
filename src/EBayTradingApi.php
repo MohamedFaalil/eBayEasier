@@ -7,7 +7,7 @@ use Spatie\ArrayToXml\ArrayToXml;
 
 
 /**
- * Class EBayTradingApi ( Compatibility Level 1131 )
+ * Class EBayTradingApi ( Compatibility Level 1139 )
  * @package ebay\src
  */
 class  EBayTradingApi
@@ -17,7 +17,7 @@ class  EBayTradingApi
      *    =================> EbayTraingApi Object's Attributes <=================
      **/
     private $token, $apiDevId, $apiAppId, $apiCertName, $headers, $url, $siteId;
-    private const COMPATIBILITY_LEVEL = 1131;
+    private const COMPATIBILITY_LEVEL = 1139;
     private const CONTENT_TYPE = 'text/xml';
 
     /**
@@ -44,7 +44,6 @@ class  EBayTradingApi
         $this->setSiteIdAttribute($siteId);
 
         $this->setPostHeaderAttribute();
-        $this->tokenValidation();
     }
 
     /**
