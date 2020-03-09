@@ -15,6 +15,7 @@ The Package will make easy to handle ebay api calls
     viii. [relistFixedPriceItem() method](#8) <br/>
     ix.   [reviseInventoryStatus() method](#9) <br/>
     x.    [completeSale() method](#10) <br/>
+    xi.   [getEbayCategories() method](#11) <br/>
 
 #### <span id="requirement">01. Requirement</span>
 <hr/>
@@ -684,6 +685,48 @@ Array
             [Timestamp] =>  dateTime
             [Version] =>  string
         
+
+)
+```
+</li>
+<li>
+    <h5 id="11">getEbayCategories() method</h5><hr/>
+    Use this call to retrieve the latest category hierarchy for the eBay site specified in the CategorySiteID property. By default, this is the site to which you submit the request. You can retrieve all categories on the site, or you can use CategoryParent to retrieve one particular category and its subcategories. The returned category list is contained in the CategoryArray property.
+    <br/>
+   
+   **Function can be contain empty or  an array as parameter. **
+   Please <a href="https://developer.ebay.com/devzone/xml/docs/reference/ebay/GetCategories.html#Input">refer the documentation</a> before construct the associative array
+```php
+        $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
+        $post_data = [  
+                     'FeedbackInfo' => '',
+                    
+                     'ViewAllNodes' => (bool){default true},
+                  
+        // ---------- More ---------------
+                    ];
+    
+            $response = $ebayTrading->getEbayCategories($post_data);
+                //OR
+             $response = $ebayTrading->getEbayCategories();
+                print_r($response);
+        }catch(Exception $e){
+            print 'Error ' . $e->getMessage();
+        }
+```
+<a href="https://developer.ebay.com/devzone/xml/docs/reference/ebay/GetCategories.html#Output">Sample Output:</a>
+```php
+Array
+(
+            ['CategoryArray'] => [
+                'Category' => [
+                    'AutoPayEnabled' => '',
+                     'B2BVATEnabled' => '',
+                     'BestOfferEnabled' => ''
+                ]
+            ]
+
+        //  `````   More   ````
 
 )
 ```

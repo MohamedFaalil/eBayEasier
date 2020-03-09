@@ -242,6 +242,25 @@ class  EBayTradingApi
             'CompleteSaleRequest', $headers);
     }
 
+    /**
+     * ==> GetCategories Endpoint <==
+     * call will be made by the function
+     * while it calls.
+     * @param $postBody
+     *
+     *      Gotten response xml , http_code & response status return as following associative array
+     * @return array
+     * @throws \Exception
+     */
+    public function getEbayCategories($postBody=null): array{
+        if (!$this->isThisType($postBody, 'array') && !$this->isThisType($postBody,'NULL'))
+            throw new \Exception('Invalid parameter: array expected');
+        $headers = $this->headers;
+        $postArray = $this->getEbayCategoriesArray($postBody);
+        return $this->executeSendPostRequestWithEssentials($postArray,
+            'GetCategoriesRequest',$headers);
+    }
+
 
 
 
@@ -643,6 +662,11 @@ class  EBayTradingApi
      * @return mixed
      */
     private function getCompleteSaleArray($postBody){
+        $postArray = $this->setMandatoryPartsOnPostArray($postBody);
+        return $postArray;
+    }
+
+    private function getEbayCategoriesArray($postBody) {
         $postArray = $this->setMandatoryPartsOnPostArray($postBody);
         return $postArray;
     }
