@@ -252,7 +252,7 @@ class  EBayTradingApi
      * @return array
      * @throws \Exception
      */
-    public function getEbayCategories($postBody=null): array{
+    public function getEbayCategories($postBody): array{
         if (!$this->isThisType($postBody, 'array') && !$this->isThisType($postBody,'NULL'))
             throw new \Exception('Invalid parameter: array expected');
         $headers = $this->headers;
