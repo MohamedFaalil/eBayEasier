@@ -261,6 +261,14 @@ class  EBayTradingApi
             'GetCategoriesRequest',$headers);
     }
 
+    public function endFixedPriceItemRequest($itemId, array  $postBody):array {
+        if($this->isThisType($itemId, 'NULL')) throw new \Exception('Item Id Mandatory');
+        $headers = $this->headers;
+        $postArray = $this->getEndFixedPriceItemRequestArray($itemId, $postBody);
+        return $this->executeSendPostRequestWithEssentials($postArray,
+            'EndFixedPriceItemRequest', $headers);
+    }
+
 
 
 
@@ -678,6 +686,14 @@ class  EBayTradingApi
      */
     private function getOrdersArray($postBody){
         $postArray = $this->setMandatoryPartsOnPostArray($postBody);
+        return $postArray;
+    }
+
+    private function getEndFixedPriceItemRequestArray($itemId, $params) {
+        $postArray = $this->setMandatoryPartsOnPostArray($params);
+        if (!array_key_exists('EndingReason', $params))
+            $postArray['EndingReason'] = 'NotAvailable';
+        $postArray['ItemID'] = $itemId;
         return $postArray;
     }
 
