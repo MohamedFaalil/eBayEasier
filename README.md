@@ -1,4 +1,4 @@
-<h1>EBayApi-Simplifier (1139)</h1> 
+<h1>EBayApi-simplifier package(1139)</h1> 
 The Package will make easy to handle ebay api calls
 
 # My Table of content
