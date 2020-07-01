@@ -733,7 +733,7 @@ Array
 ```
 </li>
 <li>
-	#### <span id="12">endFixedPriceItemRequest() method</span>
+	<span id="12">endFixedPriceItemRequest() method</span>
 	Function require ItemID and optional params.
 	
 ```php
