@@ -261,7 +261,7 @@ class  EBayTradingApi
             'GetCategoriesRequest',$headers);
     }
 
-    public function endFixedPriceItemRequest($itemId, array  $postBody):array {
+    public function endFixedPriceItemRequest($itemId, array  $postBody = []):array {
         if($this->isThisType($itemId, 'NULL')) throw new \Exception('Item Id Mandatory');
         $headers = $this->headers;
         $postArray = $this->getEndFixedPriceItemRequestArray($itemId, $postBody);
