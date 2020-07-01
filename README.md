@@ -16,6 +16,7 @@ The Package will make easy to handle ebay api calls
     ix.   [reviseInventoryStatus() method](#9) <br/>
     x.    [completeSale() method](#10) <br/>
     xi.   [getEbayCategories() method](#11) <br/>
+    xii.  [endFixedPriceItemRequest() method](#12) <br/>
 
 #### <span id="requirement">01. Requirement</span>
 <hr/>
@@ -730,5 +731,26 @@ Array
 
 )
 ```
+</li>
+<li>
+	#### <span id="12">12. endFixedPriceItemRequest() method</span>
+	Function require ItemID and optional params.
+	
+```php
+
+	try{
+	     $ebayTrading = new EBayTradingApi($token,$devId,$appId,$certName,$url,$siteId);
+             $post_data = [  
+			     'EndingReason' => 'OtherListingError',
+
+			    ];
+    
+            $response = $ebayTrading->getEbayCategories($itemId ,$post_data);
+            print_r($response);
+        }catch(Exception $e){
+            print 'Error ' . $e->getMessage();
+        }
+```
+	
 </li>
 </ol>
